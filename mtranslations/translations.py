@@ -6,18 +6,21 @@ import os
 
 # Eric Bennett, 7/29/24
 #
-# Still need to add google translate functionality
+# Still need to add google translate functionality! !
 
-USE_AI = False
+USE_AI = True
 openai_api_key = "" #paste api key here
 anthropic_api_key = "" #paste other api key here
-translation_models = ['thing1', 'thing2','thing3','thing4']
+translation_models = ['claude-3-haiku-20240307','claude-3-sonnet-20240229'] #names of the translation models to try
+#note googletrans is used for google translate translations
+
 
 # got all this code from my translation interface: https://github.com/softly-undefined/classical-chinese-tool-v2
 class Config:
     def __init__(self):
         self.openai_client = None
         self.anthropic_client = None
+        
 
 config = Config()
 
@@ -58,7 +61,7 @@ def anthropic_api_call(text, aimodel):
             model=aimodel, #"claude-3-opus-20240229"
             max_tokens=1000,
             temperature=0,
-            system="Take the input Classical Chinese text and translate it to English without using any new-line characters ('\\n')",
+            system="Take the input Chinese text and translate it to English without using any new-line characters ('\\n') outputting English text",
             messages=[
                 {
                     "role": "user",
@@ -72,7 +75,6 @@ def anthropic_api_call(text, aimodel):
             ]
             )
     return message.content[0].text
-
 
 #
 # Interfacing (correctly manipulating the different datasets to translate the right things)
@@ -115,7 +117,6 @@ for model in tqdm(translation_models, desc="Translation Models: "):
             translated = translate(text, model)
             data.append(translated)
         translations2009[model] = data
-
 
 
 
